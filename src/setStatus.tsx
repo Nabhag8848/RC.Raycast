@@ -4,29 +4,34 @@ import fetch from "node-fetch";
 
 const items = ["online", "away", "busy", "offline"];
 
+const apiData = {
+  uri: "https://",
+  xAuthToken: "",
+  xUserId: "",
+};
+
 export default function StatusList() {
-  const [filteredList, filterList] = useState(items);
   const [curStatus, setCurStatus] = useState("");
 
   const handle = async () => {
-    const data = await fetch("/api/v1/users.getStatus", {
+    const data = await fetch(`${apiData.uri}/api/v1/users.getStatus`, {
       method: "GET",
       headers: {
-        "X-Auth-Token": "",
-        "X-User-Id": "",
+        "X-Auth-Token": apiData.xAuthToken,
+        "X-User-Id": apiData.xUserId,
       },
     });
-    const res = await data.json();
+    const res: any = await data.json();
     setCurStatus(res?.status);
   };
 
   const handleStatusChange = async (status) => {
-    setCurStatus(status)
-    const data = await fetch("/api/v1/users.setStatus", {
+    setCurStatus(status);
+    const data = await fetch(`${apiData.uri}/api/v1/users.setStatus`, {
       method: "POST",
       headers: {
-        "X-Auth-Token": "",
-        "X-User-Id": "",
+        "X-Auth-Token": apiData.xAuthToken,
+        "X-User-Id": apiData.xUserId,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ status, message: status }),
@@ -44,7 +49,7 @@ export default function StatusList() {
         <List.Item title={curStatus} />
       </List.Section>
       <List.Section title="Set Status">
-        {filteredList.map((item) => (
+        {items.map((item) => (
           <List.Item
             key={item}
             title={item}
